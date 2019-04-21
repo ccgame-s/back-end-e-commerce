@@ -3,11 +3,8 @@ const dotenv = require('dotenv')
 
 const app = express()
 dotenv.config()
-
 const { PORT } = process.env
 
-app.get('/', (req, res) => {
-  res.send('Hello World!!')
-})
+app.use('/', require('./routes'))
 
 app.listen(PORT, () => console.log(`Listening on port ${PORT}`))
