@@ -31,18 +31,14 @@ router.post('/', async (req, res) => {
       res.status(400)
       res.send('Error Bad Request')
     }
-    await productsModel.create({
+    const product = {
       name,
       price,
       createTime: Date.now(),
       updateTime: Date.now()
-    })
-    res.send({
-      name,
-      price,
-      createTime: Date.now(),
-      updateTime: Date.now()
-    })
+    }
+    await productsModel.create(product)
+    res.send(product)
   }
   catch(error) {
     res.send(error)
