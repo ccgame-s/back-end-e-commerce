@@ -1,6 +1,8 @@
 const router = require('express').Router()
 const mongoose = require('mongoose')
 
+const ObjectId = mongoose.Types.ObjectId
+
 const productsSchema = new mongoose.Schema({
   name: String,
   price: Number,
@@ -18,6 +20,25 @@ router.get('/', async (req, res) => {
   try {
     const products = await productsModel.find({})
     res.send(products)
+  }
+  catch(error) {
+    res.send(error)
+  }
+})
+
+router.get('/:id', async (req, res) => {
+  try {
+    if(!ObjectId.isValid(req.params.id)) {
+      res.status(400)
+      res.send('Error id is invalid')
+    }
+    const _id = new ObjectId(req.params.id)
+    const product = await productsModel.findOne({ _id })
+    if(product) {
+      res.send(product)
+    }
+    res.status(404)
+    res.send('Error not found')
   }
   catch(error) {
     res.send(error)
