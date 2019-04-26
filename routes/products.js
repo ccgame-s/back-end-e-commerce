@@ -63,7 +63,7 @@ router.post('/', async (req, res) => {
       createTime: Date.now(),
       updateTime: Date.now()
     }
-    await productsModel.create(product)
+    productsModel.create(product)
     res.send(product)
   }
   catch(error) {
