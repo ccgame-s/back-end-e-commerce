@@ -1,7 +1,7 @@
 const router = require('express').Router()
 const mongoose = require('mongoose')
 
-const ObjectId = mongoose.Types.ObjectId
+const { ObjectId } = mongoose.Types
 
 const productsSchema = new mongoose.Schema({
   name: String,
