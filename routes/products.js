@@ -28,11 +28,12 @@ router.get('/', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
   try {
-    if(!ObjectId.isValid(req.params.id)) {
+    const { id } = req.params
+    if(!ObjectId.isValid(id)) {
       res.status(400)
       res.send('Error id is invalid')
     }
-    const _id = new ObjectId(req.params.id)
+    const _id = new ObjectId(id)
     const product = await productsModel.findOne({ _id })
     if(product) {
       res.send(product)
