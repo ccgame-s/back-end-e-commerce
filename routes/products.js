@@ -95,4 +95,34 @@ router.delete('/:id', async (req, res) => {
   }
 })
 
+router.patch('/:id', async (req, res) => {
+  try {
+    const { id } = req.params
+    const { name, price } = req.body
+    if(!ObjectId.isValid(id)) {
+      res.status(400)
+      res.error('Error id is invalid')
+    }
+    if(name) {
+      const products = await productsModel.find({ name })
+      if(products.length) {
+        res.status(400)
+        res.send('Error duplicate name exists')
+      }
+    }
+    const _id = new ObjectId(id)
+    const product = await productsModel.findOne({ _id })
+    if(product) {
+      product.name = name || product.name
+      product.price = price || product.price
+      product.updateTime = Date.now()
+    }
+    product.save()
+    res.send(product)
+  }
+  catch(error) {
+    res.send(error)
+  }
+})
+
 module.exports = router
