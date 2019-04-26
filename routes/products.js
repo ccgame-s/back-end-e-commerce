@@ -29,7 +29,12 @@ router.post('/', async (req, res) => {
     const { name, price } = req.body
     if(!name || !price) {
       res.status(400)
-      res.send('Error Bad Request')
+      res.send('Error bad request')
+    }
+    const products = await productsModel.find({ name, price })
+    if(products.length) {
+      res.status(400)
+      res.send('Error duplicate name exists')
     }
     const product = {
       name,
