@@ -71,4 +71,27 @@ router.post('/', async (req, res) => {
   }
 })
 
+router.delete('/:id', async (req, res) => {
+  try {
+    const { id } = req.params
+    if(!ObjectId.isValid(id)) {
+      res.status(400)
+      res.send('Error id is invalid')
+    }
+    const _id = new ObjectId(id)
+    const result = await productsModel.deleteOne({ _id })
+    if(result.n) {
+      res.send({
+        _id,
+        deletedCount: result.n
+      })
+    }
+    res.status(404)
+    res.send('Error not found')
+  }
+  catch(error) {
+    res.send(error)
+  }
+})
+
 module.exports = router
