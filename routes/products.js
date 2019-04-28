@@ -19,10 +19,10 @@ router.use((req, res, next) => {
 router.get('/', async (req, res) => {
   try {
     const products = await productsModel.find({})
-    res.send(products)
+    return res.send(products)
   }
   catch(error) {
-    res.send(error)
+    return res.send(error)
   }
 })
 
@@ -31,18 +31,18 @@ router.get('/:id', async (req, res) => {
     const { id } = req.params
     if(!ObjectId.isValid(id)) {
       res.status(400)
-      res.send('Error id is invalid')
+      return res.send('Error id is invalid')
     }
     const _id = new ObjectId(id)
     const product = await productsModel.findOne({ _id })
     if(product) {
-      res.send(product)
+      return res.send(product)
     }
     res.status(404)
-    res.send('Error not found')
+    return res.send('Error not found')
   }
   catch(error) {
-    res.send(error)
+    return res.send(error)
   }
 })
 
@@ -51,12 +51,12 @@ router.post('/', async (req, res) => {
     const { name, price } = req.body
     if(!name || !price) {
       res.status(400)
-      res.send('Error bad request')
+      return res.send('Error bad request')
     }
     const products = await productsModel.find({ name })
     if(products.length) {
       res.status(400)
-      res.send('Error duplicate name exists')
+      return res.send('Error duplicate name exists')
     }
     const product = {
       name,
@@ -65,10 +65,10 @@ router.post('/', async (req, res) => {
       updateTime: Date.now()
     }
     productsModel.create(product)
-    res.send(product)
+    return res.send(product)
   }
   catch(error) {
-    res.send(error)
+    return res.send(error)
   }
 })
 
@@ -77,21 +77,21 @@ router.delete('/:id', async (req, res) => {
     const { id } = req.params
     if(!ObjectId.isValid(id)) {
       res.status(400)
-      res.send('Error id is invalid')
+      return res.send('Error id is invalid')
     }
     const _id = new ObjectId(id)
     const result = await productsModel.deleteOne({ _id })
     if(result.n) {
-      res.send({
+      return res.send({
         _id,
         deletedCount: result.n
       })
     }
     res.status(404)
-    res.send('Error not found')
+    return res.send('Error not found')
   }
   catch(error) {
-    res.send(error)
+    return res.send(error)
   }
 })
 
@@ -101,13 +101,13 @@ router.patch('/:id', async (req, res) => {
     const { name, price } = req.body
     if(!ObjectId.isValid(id)) {
       res.status(400)
-      res.error('Error id is invalid')
+      return res.send('Error id is invalid')
     }
     if(name) {
       const products = await productsModel.find({ name })
       if(products.length) {
         res.status(400)
-        res.send('Error duplicate name exists')
+        return res.send('Error duplicate name exists')
       }
     }
     const _id = new ObjectId(id)
@@ -118,10 +118,10 @@ router.patch('/:id', async (req, res) => {
       product.updateTime = Date.now()
     }
     product.save()
-    res.send(product)
+    return res.send(product)
   }
   catch(error) {
-    res.send(error)
+    return res.send(error)
   }
 })
 
