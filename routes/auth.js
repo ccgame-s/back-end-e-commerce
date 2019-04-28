@@ -1,5 +1,6 @@
 const router = require('express').Router()
 const mongoose = require('mongoose')
+const jwt = require('jwt-simple')
 
 const userSchema = new mongoose.Schema({
   username: String,
@@ -14,8 +15,25 @@ router.use((req, res, next) => {
   next()
 })
 
-router.post('/login', (req, res) => {
-  return res.send('login leaw na')
+router.post('/login', async (req, res) => {
+  try {
+    const { username, password } = req.body
+    const user = await userModel.findOne({ username, password })
+    if(!user) {
+      res.status(404)
+      return res.send('Error username or password wrong')
+    }
+    const payload = {
+      sub: username,
+      iat: Date.now()
+    }
+    const { JWT_SECRET_KEY } = process.env
+    return res.send(jwt.encode(payload, JWT_SECRET_KEY))
+  }
+  catch(error) {
+    res.status(500)
+    return res.send(error)
+  }
 })
 
 router.post('/register', async (req, res) => {
@@ -43,6 +61,7 @@ router.post('/register', async (req, res) => {
     })
   }
   catch(error) {
+    res.status(500)
     return res.send(error)
   }
 })
