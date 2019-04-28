@@ -3,7 +3,7 @@ const mongoose = require('mongoose')
 
 const userSchema = new mongoose.Schema({
   username: String,
-  password: Number,
+  password: String,
   createTime: Date,
   updateTime: Date
 })
@@ -15,11 +15,36 @@ router.use((req, res, next) => {
 })
 
 router.post('/login', (req, res) => {
-  res.send('login leaw na')
+  return res.send('login leaw na')
 })
 
-router.post('/register', (req, res) => {
-  res.send('register leaw na')
+router.post('/register', async (req, res) => {
+  try {
+    const { username, password } = req.body
+    if(!username || !password) {
+      res.status(400)
+      return res.send('Error bad request')
+    }
+    const user = await userModel.findOne({ username })
+    if(user) {
+      res.status(400)
+      return res.send('Error duplicate username exists')
+    }
+    const newUser = {
+      username,
+      password,
+      createTime: Date.now(),
+      updateTime: Date.now()
+    }
+    userModel.create(newUser)
+    return res.send({
+      username,
+      createTime: newUser.createTime
+    })
+  }
+  catch(error) {
+    return res.send(error)
+  }
 })
 
 module.exports = router
