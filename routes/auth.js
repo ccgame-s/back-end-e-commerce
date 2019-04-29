@@ -20,7 +20,7 @@ router.post('/login', async (req, res) => {
     const { username, password } = req.body
     const user = await userModel.findOne({ username, password })
     if(!user) {
-      res.status(404)
+      res.status(401)
       return res.send('Error username or password wrong')
     }
     const payload = {
