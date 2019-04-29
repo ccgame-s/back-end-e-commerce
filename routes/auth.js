@@ -10,10 +10,10 @@ const userSchema = new mongoose.Schema({
 })
 const userModel = mongoose.model('User', userSchema)
 
-router.use((req, res, next) => {
-  console.log('Connected to User API..')
-  next()
-})
+// router.use((req, res, next) => {
+//   console.log('Connected to User API..')
+//   next()
+// })
 
 router.post('/login', async (req, res) => {
   try {

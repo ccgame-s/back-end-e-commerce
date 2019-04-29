@@ -11,10 +11,10 @@ const productsSchema = new mongoose.Schema({
 })
 const productsModel = mongoose.model('Product', productsSchema)
 
-router.use((req, res, next) => {
-  console.log('Connected to Products API..')
-  next()
-})
+// router.use((req, res, next) => {
+//   console.log('Connected to Products API..')
+//   next()
+// })
 
 router.get('/', async (req, res) => {
   try {
