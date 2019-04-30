@@ -2,6 +2,9 @@
   "name": "back-end-e-commerce",
   "version": "1.0.0",
   "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
   "repository": "git@github.com:newsear/back-end-e-commerce.git",
   "author": "newsear <zyncgx@hotmail.com>",
   "license": "MIT",
