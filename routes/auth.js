@@ -2,6 +2,8 @@ const router = require('express').Router()
 const mongoose = require('mongoose')
 const jwt = require('jwt-simple')
 
+const { JWT_SECRET_KEY } = process.env
+
 const userSchema = new mongoose.Schema({
   username: String,
   password: String,
@@ -17,7 +19,25 @@ const userModel = mongoose.model('User', userSchema)
 
 router.post('/login', async (req, res) => {
   try {
-    const { username, password } = req.body
+    const { username, password, jwtToken } = req.body
+    if(jwtToken) {
+      const jwtDecoded = jwt.decode(jwtToken, JWT_SECRET_KEY)
+      const now = Date.now()
+      if(now - jwtDecoded.iat > 43200) { // 12 hours
+        res.status(401)
+        return res.send('Error token has expired')
+      }
+      const user = await userModel.findOne({ username: jwtDecoded.sub })
+      if(!user) {
+        res.status(401)
+        return res.send('Error validating token')
+      }
+      return res.send({
+        id: user._id,
+        username: user.username,
+        jwtToken
+      })
+    }
     const user = await userModel.findOne({ username, password })
     if(!user) {
       res.status(401)
@@ -27,8 +47,11 @@ router.post('/login', async (req, res) => {
       sub: username,
       iat: Date.now()
     }
-    const { JWT_SECRET_KEY } = process.env
-    return res.send(jwt.encode(payload, JWT_SECRET_KEY))
+    return res.send({
+      id: user._id,
+      username: user.username,
+      jwtToken: jwt.encode(payload, JWT_SECRET_KEY)
+    })
   }
   catch(error) {
     res.status(500)
