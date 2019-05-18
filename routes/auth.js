@@ -23,7 +23,7 @@ router.post('/login', async (req, res) => {
     if(jwtToken) {
       const jwtDecoded = jwt.decode(jwtToken, JWT_SECRET_KEY)
       const now = Date.now()
-      if(now - jwtDecoded.iat > 43200) { // 12 hours
+      if(now - jwtDecoded.iat > 21600000) { // 12 hours
         res.status(401)
         return res.send('Error token has expired')
       }
