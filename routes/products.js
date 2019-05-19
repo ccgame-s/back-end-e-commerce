@@ -105,7 +105,7 @@ router.patch('/:id', async (req, res) => {
     }
     if(name) {
       const products = await productsModel.find({ name })
-      if(products.length && products.pop()._id !== id) {
+      if(products.length && products.pop()._id.toString() !== id) {
         res.status(400)
         return res.send('Error duplicate name exists')
       }
